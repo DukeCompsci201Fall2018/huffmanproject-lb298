@@ -98,11 +98,12 @@ public class HuffProcessor {
 		HuffNode current=root;
 		if (current.myLeft!=null&&current.myRight!=null) {
 			out.writeBits(1, 0);
-			writeHeader(root.myLeft,out);
-			writeHeader(root.myRight,out);
+			writeHeader(current.myLeft,out);
+			writeHeader(current.myRight,out);
 		}
 		else {
 			if (current.myLeft==null&&current.myRight==null) {
+				out.writeBits(1, 1);
 				out.writeBits(BITS_PER_WORD+1, current.myValue);
 			}
 		}
