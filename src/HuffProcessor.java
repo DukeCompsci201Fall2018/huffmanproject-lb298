@@ -52,7 +52,7 @@ public class HuffProcessor {
 		writeCompressedBits(codings,in,out);
 		out.close();
 	}
-	public int[] readForCounts(BitInputStream in) {
+	private int[] readForCounts(BitInputStream in) {
 		int[] arr = new int[ALPH_SIZE+1];
 		Arrays.fill(arr, 0);
 		arr[PSEUDO_EOF]=1;
@@ -63,7 +63,7 @@ public class HuffProcessor {
 		}
 		return arr;
 	}
-	public HuffNode makeTreeFromCounts(int[] arr) {
+	private HuffNode makeTreeFromCounts(int[] arr) {
 		PriorityQueue<HuffNode> pq=new PriorityQueue<>();
 		for (int i=0;i<arr.length;i++) {
 			if (arr[i]>0) {
@@ -79,12 +79,12 @@ public class HuffProcessor {
 		HuffNode root=pq.remove();
 		return root;
 	}
-	public String[] makeCodingsFromTree(HuffNode root) {
+	private String[] makeCodingsFromTree(HuffNode root) {
 		String[] encodings = new String[ALPH_SIZE+1];
 		codingHelper(root,"",encodings);
 		return encodings;
 	}
-	public void codingHelper(HuffNode root, String path, String[] encodings) {
+	private void codingHelper(HuffNode root, String path, String[] encodings) {
 		if (root.myLeft==null&&root.myRight==null) {
 			encodings[root.myValue]=path;
 			return;
@@ -94,7 +94,7 @@ public class HuffProcessor {
 			codingHelper(root.myRight,path+"1",encodings);
 		}
 	}
-	public void writeHeader(HuffNode root, BitOutputStream out) {
+	private void writeHeader(HuffNode root, BitOutputStream out) {
 		HuffNode current=root;
 		if (current.myLeft!=null&&current.myRight!=null) {
 			out.writeBits(1, 0);
@@ -108,7 +108,7 @@ public class HuffProcessor {
 			}
 		}
 	}
-	public void writeCompressedBits(String[] codings, BitInputStream in, BitOutputStream out) {
+	private void writeCompressedBits(String[] codings, BitInputStream in, BitOutputStream out) {
 		while(true) {
 			int val = in.readBits(BITS_PER_WORD);
 			if (val==-1) break;
@@ -142,7 +142,7 @@ public class HuffProcessor {
 		}
 		out.close();*/
 	}
-	public HuffNode readTreeHeader(BitInputStream in) {
+	private HuffNode readTreeHeader(BitInputStream in) {
 		int bits=in.readBits(1);
 		if (bits==-1) {
 			throw new HuffException("wat"+bits);
@@ -158,7 +158,7 @@ public class HuffProcessor {
 		}
 			
 	}
-	public void readCompressedBits(HuffNode root, BitInputStream in, BitOutputStream out) {
+	private void readCompressedBits(HuffNode root, BitInputStream in, BitOutputStream out) {
 		HuffNode current=root;
 		while(true) {
 			int bits=in.readBits(1);
